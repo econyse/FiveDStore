@@ -55,6 +55,15 @@ Route::get('/mongodb', function () {
     return view('mongodb');
 });
 
+// Categories
+Route::get('/admin/categories', 'CategoryController@index')->name('categories');
+
+Route::post('/admin/categories/create', 'CategoryController@create')->name('createCategory');
+
+Route::post('/admin/categories/edit/{id}', 'CategoryController@edit')->name('editCategory');
+
+Route::delete('/admin/categories/delete/{id}', 'CategoryController@delete')->name('deleteCategory');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
