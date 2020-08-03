@@ -9,13 +9,31 @@
                     <h6 class="card-subtitle mb-2 text-muted">${{ $product->price." ".$product->currency }}</h6>
                     <p class="card-text">{{ $product->description }}</p>
                 </div>
-                <div class="card-footer">
+                <div id="StarRating" class="card-footer">
                     <p>Rating: </p>
-                    <input type="radio" name="rating" id="rating">
-                    <input type="radio" name="rating" id="rating">
-                    <input type="radio" name="rating" id="rating">
-                    <input type="radio" name="rating" id="rating">
-                    <input type="radio" name="rating" id="rating">
+                    <span class="fa-2x text-warning">
+                        <i class="far fa-star" onclick="setStarRating(2);" onmouseleave="starRating(document.getElementById('ratingval').value)" onmouseenter="starRating(2)"></i>
+                    </span>
+                    <span class="fa-2x text-warning">
+                        <i class="far fa-star" onclick="setStarRating(4);" onmouseleave="starRating(document.getElementById('ratingval').value)" onmouseenter="starRating(4)"></i>
+                    </span>
+                    <span class="fa-2x text-warning">
+                        <i class="far fa-star" onclick="setStarRating(6);" onmouseleave="starRating(document.getElementById('ratingval').value)" onmouseenter="starRating(6)"></i>
+                    </span>
+                    <span class="fa-2x text-warning">
+                        <i class="far fa-star" onclick="setStarRating(8);" onmouseleave="starRating(document.getElementById('ratingval').value)" onmouseenter="starRating(8)"></i>
+                    </span>
+                    <span class="fa-2x text-warning">
+                        <i class="far fa-star" onclick="setStarRating(10);" onmouseleave="starRating(document.getElementById('ratingval').value)" onmouseenter="starRating(10)"></i>
+                    </span>
+                    @php
+                        $rating = (array)$product->rating;
+                        if (count($rating) == 0)
+                            $avg = 0;
+                        else
+                            $avg = array_sum($rating) / count($rating);
+                    @endphp
+                    <input type="number" hidden name="ratingval" id="ratingval" min="0" max="10" value="{{ round($avg) }}">
                 </div>
             </div>
 
@@ -55,4 +73,40 @@
 
         </div>
     </div>
+    <script>
+        
+        function starRating(rating) {
+            var elStars = document.getElementById("StarRating").getElementsByTagName("i");
+            for (i = 0; i < elStars.length; i++) {
+                elStars[i].setAttribute("class", "far fa-star")
+            }
+            for (i = 1; i <= Math.ceil(rating / 2); i++) {
+                let elStar = elStars[i-1];
+                if (i == Math.ceil(rating / 2) && rating % 2 == 1) {
+                    elStar.setAttribute("class", "fas fa-star-half-alt");
+                } else {
+                    elStar.setAttribute("class", "fas fa-star");
+                }
+            }
+        }
+        function setStarRating(rating) {
+            const prodID = "{{ $product->_id}}"
+            var formData = {
+                id: prodID,
+                rating: rating
+            };
+            axios.post("/api/rating", formData)
+                .then(function (response) {
+                    document.getElementById("ratingval").value = response.data.avg;
+                    starRating(repsonse.data.avg);
+                })
+                .catch(function (error) {
+                    console.log("error: " + error);
+                });
+        }
+        (function () {
+            starRating(document.getElementById("ratingval"));
+        })();
+    </script>
+
 @endsection

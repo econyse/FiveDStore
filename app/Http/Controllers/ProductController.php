@@ -120,4 +120,8 @@ class ProductController extends Controller
         $product = $collection->findOne(["_id" => new MongoDB\BSON\ObjectId($id)]);
         return view('Products.Details', [ "product" => $product]);
     }
+
+    public function SetRating() {
+        
+    }
 }
