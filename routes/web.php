@@ -54,7 +54,7 @@ Route::post('/products/comment', 'ProductController@AddComment')->name('ProductC
 Route::get('/mongodb', function () {
     return view('mongodb');
 });
-
+Route::get('/custom/mongo/login', 'MongoController@login');
 // Categories
 Route::get('/admin/categories', 'CategoryController@index')->name('categories');
 
